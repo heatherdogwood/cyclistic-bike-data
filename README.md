@@ -222,3 +222,7 @@ My business suggestions then, would be the following:
 1. Advertise the convenience and flexibility that Cyclistic would offer for work commutes. It is unlikely that casual customers do not work.
 2. Explore a promotional program will discount annual subscription for first time users.
 3. Strike deals with local business to offer discounts to those who have annual subscriptions. This could include museums, restaurants, or other leisure activities.
+
+# Tableau Dashboard
+
+https://public.tableau.com/app/profile/heather.dogwood/viz/Book1_17101034629570/Dashboard1?publish=yes

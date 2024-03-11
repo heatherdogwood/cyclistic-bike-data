@@ -178,12 +178,12 @@ column_percentiles = trips_2019['tripduration'].quantile(percentiles)
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/f3c3f0aa-1152-44c3-8b1d-2691d4191787)
 
 
-I have binned age into octiles: 0-25, 26-27, 28-29, 30-32, 33-35, 36-40, 41-50, 51+.
+I have binned age into quintiles: 0-26, 27-30, 31-34, 35-43, and 44+.
 
 ```
 trips_2019['generation'] = pd.cut(trips_2019['age'],
-                           bins = [0, 25, 27, 29, 32, 35, 40, 50, 79],
-                           labels = ['25 and younger', '26-27', '28-29', '30-32', '33-35', '36-40', '41-50', '51+'])
+                           bins = [0, 26, 30, 34, 43, 79],
+                           labels = ['26 and younger', '27-30', '31-34', '35-43', '44+'])
 
 trips_2019.head()
 ```
@@ -227,58 +227,69 @@ trips_2019 = trips_2019[['tripduration', 'usertype', 'gender', 'birthyear', 'day
 trips_2019.to_csv('bike_data_csv.csv', index=False)
 ```
 
-#Summary of Data
+# Summary of Data
 
-#Number of Trips by User Type
+## Number of Trips by User Type
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/2f717a03-ec12-430d-a28f-afa5ee307eca)
 
 Of the 3.45 million trips, 79.34% were subscribers and 20.66 were customers.
 
-#Trip Duration by User Type
+## Trip Duration by User Type
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/0c2f4809-7e5b-4948-b689-1b10a93fba29)
 
 Customers seem to prefer longer rides - an average of 25.3 minutes vs. Subscriber's 12.4 minutes.
 
-#Usertype and Gender
+## Usertype and Gender
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/712870ba-f655-4b8a-bbe1-834dd6aeaf1b)
 
 Males are slightly more likely than females to be subscribers (91.93% vs. 86.44%).
 
-#Usertype and Age
+## Usertype and Age
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/eb73dffd-8a01-4d3c-a579-54ce0866f029)
 
 Customers appear to be slightly younger on average (30.51 years vs. 35.33 years for Subscribers). This holds true for median age as well (28 years for Customers vs 32 years for Subscribers). The minimum and maximum age is identical for subscribers and customers (16 and 79 respectively). 
 
-#Trip Duration by Age
+## Trip Duration by Age
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/612241eb-afd8-47a6-bde7-0dbed0dcc558)
 
 Subscribers among all age brackets appear to have similar average trip duration. Customers appear to take longer trips as age increases.
 
-#Number of Trips by Day of Week and User Type
+## Number of Trips by Day of Week and User Type
 
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/1fe1b671-20ac-4369-8f29-fef9c15b606e)
 
-Subscribers take more trips during Sunday-Thursday and see a drop-off on Friday and Saturday. Conversely, casual users see an uptick on Friday and Saturday.
+Subscribers take more trips during Sunday-Thursday and see a drop-off on Friday and Saturday. Conversely, casual users see an uptick on Friday and Saturday. This would suggest that subscribers are using Cyclistic primarily for leisure activities.
 
-#Trip Duration by Day of Week and User Type
+## Trip Duration by Day of Week and User Type
 
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/794ca0f7-35f6-4c72-906b-9afba8ed0190)
 
-Customers take longer trips on the weekend, and so do subscribers.
+Customers take longer trips on the weekend, and so do subscribers. Longer rides could potentially be taken for leisure purposes?
 
-#Number of Trips by Hour and User Type
+## Number of Trips by Hour and User Type
 
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/914cc7a5-d673-4b46-9091-956c8d6456fc)
 
 Customers seem to take most of their trips between noon and 5PM, and then slowly taper off. On the other hand, there are 3 local maxima for subscribers - one at 8 AM, one at 12PM, and one at 5PM. This could roughly correspond to leaving for work, lunch, and returning home from work.
 
-#Proportion of Trips on Holidays
+## Proportion of Trips on Holidays
 
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/75344436-578e-43bb-9ec7-d41037023fc8)
+
 Customers make up 20% of the trips on non-Holidays, but are 30% on Holidays. This could suggest riding for leisure.
 
-#Number of Trips by Month and User Type
+## Number of Trips by Month and User Type
 
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/e021b946-6b5f-45ee-bc5c-1807090b0195)
 
 The peak for both groups is during the summer. However, you can see a much harsher drop-off in Autumn and Winter for Customers. This could suggest riding for leisure. 
+
+# Conclusion
+
+Casual customers, maybe unsurprisingly, seem to overwhelmingly ride for leisure. Subscribers busiest hours of the day line up well with a traditional office work schedule (3 local maxima at 8 AM, 12 PM, 5PM), but customers busiest hours do not exhibit the same behavior. Customers' busiest days (Friday) are an inverse of Subscribers' (Monday). Customers also appear more inclined than subscribers to ride on holidays.
+
+My business suggestions then, would be the following:
+
+1. Advertise the convenience and flexibility that Cyclistic would offer for work commutes. It is unlikely that casual customers do not work.
+2. Explore a promotional program will discount annual subscription for first time users.
+3. Strike deals with local business to offer discounts to those who have annual subscriptions. This could include museums, restaurants, or other leisure activities.

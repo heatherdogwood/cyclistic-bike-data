@@ -89,7 +89,7 @@ I noticed that the tripduration column is formatted as a string, so I converted 
 
 `trips_2019['tripduration'] = round((trips_2019['tripduration'].str.replace(',', '').astype(float).astype(int))/60, 1)`
 
-There are a good amount of nulls in the gender (538,751) and birthyear (559,206) columns. I considered dropping these columns or imputing the values, but decided against it. In this case, I believe the existence of these nulls can shed insights on our casual customers. 
+There are a good amount of nulls in the gender (538,751) and birthyear (559,206) columns. I will not be using these columns.
 
 ```
 birthyear_nulls = trips_2019['birthyear'].isnull().sum()
@@ -123,52 +123,6 @@ time_of_day: The hour of the day split into 6 bins of 4 hours each. 'Late Night'
 
 ```
 
-Afterwards, I created two new columns from birthyear.
-
-First, age: This is expressed as 2019 - birthyear. 2019 was chosen as that was the year this dataset was published.
-
-After examining the age column, I noticed there were some outliers. For example, the max is 260.
-
-```
-trips_2019['age'] = 2019 - trips_2019.birthyear
-percentiles = [0, .25, .5, .75, 1]
-column_percentiles = trips_2019['age'].quantile(percentiles)
-```
-
-![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/1996d45c-9727-4b0e-9553-aae643475e32)
-
-
-We will remove these outliers from age, and after that we may as well examine and remove outliers from tripduration.
-
-```
-Q1 = trips_2019['age'].quantile(0.25)
-Q3 = trips_2019['age'].quantile(0.75)
-IQR = Q3 - Q1
-
-# identify outliers
-threshold = 3
-outliers = trips_2019[(trips_2019['age'] < Q1 - threshold * IQR) | (trips_2019['age'] > Q3 + threshold * IQR)]
-trips_2019 = trips_2019[~trips_2019.index.isin(outliers.index)]
-
-percentiles = [0, .25, .50, .75, 1]
-column_percentiles = trips_2019['tripduration'].quantile(percentiles)
-
-Q1 = trips_2019['tripduration'].quantile(0.25)
-Q3 = trips_2019['tripduration'].quantile(0.75)
-IQR = Q3 - Q1
-
-# identify outliers
-threshold = 3
-outliers = trips_2019[(trips_2019['tripduration'] < Q1 - threshold * IQR) | (trips_2019['tripduration'] > Q3 + threshold * IQR)]
-trips_2019 = trips_2019[~trips_2019.index.isin(outliers.index)]
-```
-
-Looking at quantiles of age and tripduration again: Our outliers have been removed! I think we are good to bin the ages.
-
-```
-percentiles = [0, .25, .50, .75, 1]
-column_percentiles = trips_2019['age'].quantile(percentiles)
-```
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/61596775-aa53-40bd-888b-af5e5fb512cd)
 
 ```
@@ -177,16 +131,6 @@ column_percentiles = trips_2019['tripduration'].quantile(percentiles)
 ```
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/f3c3f0aa-1152-44c3-8b1d-2691d4191787)
 
-
-I have binned age into quintiles: 0-26, 27-30, 31-34, 35-43, and 44+.
-
-```
-trips_2019['generation'] = pd.cut(trips_2019['age'],
-                           bins = [0, 26, 30, 34, 43, 79],
-                           labels = ['26 and younger', '27-30', '31-34', '35-43', '44+'])
-
-trips_2019.head()
-```
 
 One more idea that we can derive from start_time: Is the trip taking place on a holiday or not?
 
@@ -223,7 +167,7 @@ trips_2019['holiday'].loc[(trips_2019['month'] == 4) & (trips_2019['day_of_month
 I did do SOME visualization in Python, but decided to do the visualization again in Tableau. 1. Because Tableau is more flexible and user-friendly, but also 2. It is much more visually appealing in my opinion.
 
 ```
-trips_2019 = trips_2019[['tripduration', 'usertype', 'gender', 'birthyear', 'day_of_week', 'month', 'season', 'hour', 'time_of_day', 'age', 'generation', 'holiday']]
+trips_2019 = trips_2019[['tripduration', 'usertype', 'day_of_week', 'month', 'season', 'hour', 'time_of_day', 'holiday']]
 trips_2019.to_csv('bike_data_csv.csv', index=False)
 ```
 
@@ -238,21 +182,6 @@ Of the 3.45 million trips, 79.34% were subscribers and 20.66 were customers.
 ![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/0c2f4809-7e5b-4948-b689-1b10a93fba29)
 
 Customers seem to prefer longer rides - an average of 25.3 minutes vs. Subscriber's 12.4 minutes.
-
-## Usertype and Gender
-![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/712870ba-f655-4b8a-bbe1-834dd6aeaf1b)
-
-Males are slightly more likely than females to be subscribers (91.93% vs. 86.44%).
-
-## Usertype and Age
-![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/eb73dffd-8a01-4d3c-a579-54ce0866f029)
-
-Customers appear to be slightly younger on average (30.51 years vs. 35.33 years for Subscribers). This holds true for median age as well (28 years for Customers vs 32 years for Subscribers). The minimum and maximum age is identical for subscribers and customers (16 and 79 respectively). 
-
-## Trip Duration by Age
-![image](https://github.com/heatherdogwood/cyclistic-bike-data/assets/65338495/612241eb-afd8-47a6-bde7-0dbed0dcc558)
-
-Subscribers among all age brackets appear to have similar average trip duration. Customers appear to take longer trips as age increases.
 
 ## Number of Trips by Day of Week and User Type
 
